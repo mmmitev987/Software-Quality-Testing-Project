@@ -173,7 +173,7 @@ test.describe('Setup Wizard', () => {
   // ─── Step 1: Start page ───────────────────────────────────────────────────────
   // No backend calls happen on this step — pure static rendering.
 
-  test('start page shows all stepper steps', async ({ page }) => {
+  test('start page shows all stepper steps', async ({ page }) => { // test 11
     await page.goto('/admin/setup');
     await expect(page.getByText("Welcome to Mealie! Let's get started")).toBeVisible();
     await expect(page.getByText('Start').first()).toBeVisible();
@@ -221,7 +221,7 @@ test.describe('Setup Wizard', () => {
   // These tests click Next without valid data, so the frontend validation fires
   // before any network call is made. No backend state is needed or changed.
 
-  test('"Next" navigates from Start to Account Details', async ({ page }) => {
+  test('"Next" navigates from Start to Account Details', async ({ page }) => { //test 15
     await page.goto('/admin/setup');
     // The v-stepper renders two "Next" buttons simultaneously (one per step window,
     // kept in DOM for CSS transitions). .last() targets the currently active one.
@@ -266,7 +266,7 @@ test.describe('Setup Wizard', () => {
     await expect(page.getByLabel('Enable Advanced Content')).toBeVisible();
   });
 
-  test('"Back" button on Account Details returns to Start page', async ({ page }) => {
+  test('"Back" button on Account Details returns to Start page', async ({ page }) => { //test 20
     await page.goto('/admin/setup');
     await page.getByRole('button', { name: 'Next' }).last().click();
     await page.getByRole('button', { name: 'Back' }).click();
@@ -288,7 +288,7 @@ test.describe('Setup Wizard', () => {
     await expect(page.locator('span.headline').filter({ hasText: 'Account Details' })).toBeVisible();
   });
 
-  test('Account Details shows "Password must match" when passwords differ and blocks Next', async ({ page }) => {
+  test('Account Details shows "Password must match" when passwords differ and blocks Next', async ({ page }) => { //тест 22
     await page.goto('/admin/setup');
     await page.getByRole('button', { name: 'Next' }).last().click();
     await page.getByLabel('Username').first().fill('testuser');
@@ -316,7 +316,7 @@ test.describe('Setup Wizard', () => {
   // Next does NOT persist anything. The wizard writes to the database ONLY when
   // Submit is clicked on step 5 (handled separately below).
 
-  test('valid Account Details allows Next to advance to Site Settings', async ({ page }) => {
+  test('valid Account Details allows Next to advance to Site Settings', async ({ page }) => { //23
     // Unique per run — guaranteed not to be in the database.
     const run = Date.now();
     await page.goto('/admin/setup');
@@ -346,7 +346,7 @@ test.describe('Setup Wizard', () => {
     ).toBeVisible({ timeout: 8000 });
   });
 
-  test('Summary step renders user data and a Submit button', async ({ page }) => {
+  test('Summary step renders user data and a Submit button', async ({ page }) => {//26
     const { username, email, fullName } = await navigateToStep(page, 'summary');
 
     // Check the labels in the confirmation list.
@@ -361,9 +361,11 @@ test.describe('Setup Wizard', () => {
     // Check that the actual values entered in Account Details appear in the summary.
     // This verifies the wizard carries the data through to the confirmation step,
     // not just that the labels exist.
-    await expect(page.getByText(username)).toBeVisible();
-    await expect(page.getByText(email)).toBeVisible();
-    await expect(page.getByText(fullName)).toBeVisible();
+    // exact: true on username — otherwise it also matches the email element (which
+    // contains the username as a substring, e.g. "testuser_123@example.com").
+    await expect(page.getByText(username, { exact: true })).toBeVisible();
+    await expect(page.getByText(email, { exact: true })).toBeVisible();
+    await expect(page.getByText(fullName, { exact: true })).toBeVisible();
 
     await expect(page.getByRole('button', { name: 'Submit' })).toBeVisible();
   });
