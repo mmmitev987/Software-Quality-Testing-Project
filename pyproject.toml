@@ -47,6 +47,7 @@ dependencies = [
     "ingredient-parser-nlp==2.7.0",
     "pint==0.25.3",
     "httpx-curl-cffi==0.1.5",
+    "python-docx==1.2.0",
 ]
 
 [project.scripts]
@@ -79,6 +80,7 @@ dev = [
     "types-urllib3==1.26.25.14",
     "pydantic-to-typescript2==1.0.6",
     "freezegun==1.5.5",
+    "mutmut==3.5.0",
 ]
 
 [build-system]
